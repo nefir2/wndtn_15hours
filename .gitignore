@@ -1,11 +1,15 @@
+#ignore all dotfiles
 **/.*
 
+#ignore binaries
 **/bin
 **/bin/*
 
+#ignore ide files
 **/.vscode
 **/.vscode/*
 
+#ignore binaries that is not in bin directory
 **/*.s
 **/*.o
 **/*.exe
