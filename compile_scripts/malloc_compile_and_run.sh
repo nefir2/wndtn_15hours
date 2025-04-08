@@ -1,9 +1,9 @@
 #!/bin/bash
 
 export filename='wndtn_malloc';
-export fileext='.c';
 export srcdir='src';
 export bindir='bin';
+export fileext='.c';
 export compilername='gcc';
 
 command -v $compilername;
@@ -13,6 +13,6 @@ if [[ $? -ne 0 ]]; then
 fi
 cd ../
 gcc "${srcdir}/${filename}${fileext}" -o "${bindir}/${filename}_${compilername}"; 
-command `pwd`/$bindir/"${filename}_${compilername}";
+command "${bindir}/${filename}_${compilername}";
 
 exit 0;

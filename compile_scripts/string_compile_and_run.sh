@@ -6,7 +6,7 @@ export bindir='bin';
 export fileext='.cpp';
 export compilername='g++';
 
-command -v $comilername;
+command -v $compilername;
 if [[ $? -ne 0 ]]; then
 	echo "${compilername} not found in your system.";
 	exit 1;
