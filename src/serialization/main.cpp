@@ -4,10 +4,10 @@
 namespace ObjectModel
 {
 	enum class Wrapper : int8_t {
-			PRIMITIVE = 1,
-			ARRAY,
-			STRING,
-			OBJECT
+		PRIMITIVE = 1,
+		ARRAY,
+		STRING,
+		OBJECT
 	};
 
 	enum class Type : int8_t {
@@ -39,10 +39,17 @@ namespace ObjectModel
 		int32_t getSize();
 		void setName(std::string);
 		std::string getName();
+		virtual void pack(std::vector<int8_t>*, int16_t*);
 	};
 
 	class Primitive : public Root {
-
+	private:
+		int8_t type;
+		std::vector<int8_t>* data;
+	private:
+		Primitive();
+	public:
+		static Primitive* createI32(std::string name, Type type, int32_t value);
 	};
 
 	class Array : public Root {
@@ -63,7 +70,23 @@ namespace ObjectModel
 		size += nameLength;
 	}
 
-	
+	int32_t Root::getSize() {
+		return size;
+	}
+
+	std::string Root::getName() {
+		return name;
+	}
+
+	Primitive* Primitive::createI32(std::string name, Type type, int32_t value) {
+		Primitive* p = new Primitive();
+		p->setName(name);
+		p->wrapper = static_cast<int8_t>(Wrapper::PRIMITIVE);
+		p->type = static_cast<int8_t>(type);
+		p->data = new std::vector<int8_t>(sizeof value);
+
+		return p;
+	}
 } 
 
 
@@ -168,6 +191,9 @@ using namespace EventSystem;
 using namespace ObjectModel;
 
 int main(int argc, char** argv) {
+	int32_t foo = 5;
+
+#if 0
 	System Foo("Foo");
 	Event* e = new KeyboardEvent('a', true, false);
 
@@ -175,7 +201,7 @@ int main(int argc, char** argv) {
 	KeyboardEvent* kb = static_cast<KeyboardEvent*>(Foo.getEvent()); //better use this line, than less safe: (Keyboard*)Foo.getEvent();
 	
 	Foo.serialize();
-
+#endif
 	(void)argc;
 	(void)argv;
 	return 0;
