@@ -96,12 +96,12 @@ namespace EventSystem {
 using namespace EventSystem;
 
 int main(int argc, char** argv) {
-
 	System Foo("Foo");
 	Event* e = new KeyboardEvent('a', true, false);
 
 	Foo.addEvent(e);
-
+	KeyboardEvent* kb = static_cast<KeyboardEvent*>(Foo.getEvent()); //better use this line, than less safe: (Keyboard*)Foo.getEvent();
+	
 	(void)argc;
 	(void)argv;
 	return 0;
