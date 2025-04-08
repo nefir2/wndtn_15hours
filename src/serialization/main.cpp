@@ -1,6 +1,72 @@
 #include <iostream>
 #include <vector>
 
+namespace ObjectModel
+{
+	enum class Wrapper : int8_t {
+			PRIMITIVE = 1,
+			ARRAY,
+			STRING,
+			OBJECT
+	};
+
+	enum class Type : int8_t {
+		I8 = 1,
+		I16, 
+		I32,
+		I64,
+
+		U8,
+		U16,
+		U32,
+		U64,
+
+		FLOAT,
+		DOUBLE,
+
+		BOOL
+	};
+
+	class Root {
+	protected:
+		std::string name;
+		int16_t nameLength;
+		int8_t wrapper;
+		int32_t size;
+	protected:
+		Root();
+	public: 
+		int32_t getSize();
+		void setName(std::string);
+		std::string getName();
+	};
+
+	class Primitive : public Root {
+
+	};
+
+	class Array : public Root {
+
+	};
+
+	class Object : public Root {
+
+	};
+
+	// definition
+
+	Root::Root() : name("unknown"), wrapper(0), nameLength(0), size(sizeof nameLength + sizeof wrapper + sizeof size) {}
+
+	void Root::setName(std::string name) { 
+		this->name = name;
+		nameLength = (int16_t)name.length();
+		size += nameLength;
+	}
+
+	
+} 
+
+
 namespace EventSystem {
 
 	class Event;
@@ -20,6 +86,7 @@ namespace EventSystem {
 		void addEvent(Event*);
 		Event* getEvent();
 		bool isActive();
+		void serialize();
 	};
 
 	class Event {
@@ -77,6 +144,10 @@ namespace EventSystem {
 		return (bool)system; //there was: if (!system) return false; return true;
 	}
 
+	void System::serialize() {
+		// serialization things
+	}
+
 	Event::Event(DeviceType dType) {
 		this->dType = dType;
 	}
@@ -94,6 +165,7 @@ namespace EventSystem {
 }
 
 using namespace EventSystem;
+using namespace ObjectModel;
 
 int main(int argc, char** argv) {
 	System Foo("Foo");
@@ -102,6 +174,8 @@ int main(int argc, char** argv) {
 	Foo.addEvent(e);
 	KeyboardEvent* kb = static_cast<KeyboardEvent*>(Foo.getEvent()); //better use this line, than less safe: (Keyboard*)Foo.getEvent();
 	
+	Foo.serialize();
+
 	(void)argc;
 	(void)argv;
 	return 0;
