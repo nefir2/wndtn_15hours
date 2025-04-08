@@ -136,7 +136,7 @@ void test() {
 
 }
 
-int main(int argc, char** argv) {
+int main(void) {
 	test();
 	return 0;
 }
