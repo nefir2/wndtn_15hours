@@ -11,7 +11,7 @@ if [[ $? -ne 0 ]]; then
 	echo "${compilername} not found in your system.";
 	exit 1;
 fi
-
+cd ../
 g++ "${srcdir}/${filename}${fileext}" -o "${bindir}/${filename}";
 command "${bindir}/${filename}";
 
