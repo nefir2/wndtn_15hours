@@ -8,6 +8,10 @@ namespace Core
 {
 	template<typename T>
 	void encode(std::vector<int8_t>* buffer, int16_t* iterator, T value);
+	template<>
+	void encode<std::string>(std::vector<int8_t>* buffer, int16_t* iterator, std::string value);
+	template<typename T>
+	void encode(std::vector<int8_t>* buffer, int16_t* iterator, std::vector<T> value);
 }
 
 namespace ObjectModel {
@@ -63,21 +67,62 @@ namespace ObjectModel {
 			p->setName(name);
 			p->wrapper = static_cast<int8_t>(Wrapper::PRIMITIVE);
 			p->type = static_cast<int8_t>(type);
-			p->data = new std::vector<int8_t>(sizeof value);
+			p->data = new std::vector<int8_t>(sizeof(T)); //здесь он оставил как было sizeof value. 
 			p->size += p->data->size();
 			int16_t iterator = 0;
-			Core::template encode(p->data, &iterator, value);
+			Core::template encode<T>(p->data, &iterator, value);
 			return p;
 		}
 		void pack(std::vector<int8_t>*, int16_t*);
 	};
 
 	class Array : public Root {
+	private:
+		int8_t type = 0;
+		int32_t count = 0;
+		std::vector<int8_t>* data = nullptr;
+	private:
+		Array();
+	public:
+		template<typename T>
+		static Array* createArray(std::string name, Type type, std::vector<T> value) {
+			Array* arr = new Array();
+			arr->setName(name);
+			arr->wrapper = static_cast<int8_t>(Wrapper::ARRAY);
+			arr->type = static_cast<int8_t>(type);
+			arr->count = value.size();
+			arr->data = new std::vector<int8_t>(sizeof(T) * value.size());
+			arr->size += value.size() * sizeof(T);
+			int16_t iterator = 0;
+			Core::template encode<T>(arr->data, &iterator, value);
+			return arr;
+		}
+		template<typename T>
+		static Array* createString(std::string name, Type type, T value) {
+			Array* str = new Array();
+			str->setName(name);
+			str->wrapper = static_cast<int8_t>(Wrapper::STRING);
+			str->type = static_cast<int8_t>(type);
+			str->count = value.size();
+			str->data = new std::vector<int8_t>(value.size());
+			str->size += value.size();
+			int16_t iterator = 0;
+			Core::template encode<T>(str->data, &iterator, value);
+			return str;
+		}
 
+		void pack(std::vector<int8_t>*, int16_t*);
 	};
 
 	class Object : public Root {
-
+	private:
+		std::vector<Root*> entities;
+		int16_t count = 0;
+	public:
+		Object(std::string);
+		void addEntity(Root* r);
+		Root* findByName(std::string);
+		void pack(std::vector<int8_t>*, int16_t*);
 	};
 } 
 
@@ -86,7 +131,7 @@ namespace Core {
 	namespace Util {
 		bool isLittleEndian() {
 			// 0x00 0x00 0x00 0b0000 0101
-			int8_t a= 5;
+			int8_t a = 5;
 			std::string result = std::bitset<8>(a).to_string();
 			if (result.back() == '1') return true;
 		}
@@ -103,7 +148,7 @@ namespace Core {
 		void retriveNsave(ObjectModel::Root* r) {
 			int16_t iterator = 0;
 			std::vector<int8_t> buffer(r->getSize());
-			std::string name = r->getName().substr(0, r->getName().length()).append(".ttc");
+			std::string name = r->getName().substr(0, r->getName().length()).append(".abc");
 			r->pack(&buffer, &iterator);
 			save(name.c_str(), buffer);
 		}
@@ -172,6 +217,48 @@ namespace ObjectModel {
 		Core::encode<int8_t>(buffer, iterator, wrapper);
 		Core::encode<int8_t>(buffer, iterator, type);
 		Core::encode<int8_t>(buffer, iterator, *data);
+		Core::encode<int32_t>(buffer, iterator, size);
+	}
+
+	Array::Array() {
+		size += sizeof type + sizeof count;
+	}
+
+	void Array::pack(std::vector<int8_t>* buffer, int16_t* iterator) {
+		Core::encode<std::string>(buffer, iterator, name);
+		Core::encode<int16_t>(buffer, iterator, nameLength);
+		Core::encode<int8_t>(buffer, iterator, wrapper);
+		Core::encode<int8_t>(buffer, iterator, type);
+		Core::encode<int32_t>(buffer, iterator, count);
+		Core::encode<int8_t>(buffer, iterator, *data);
+		Core::encode<int32_t>(buffer, iterator, size);
+	}
+
+	Object::Object(std::string name) {
+		setName(name);
+		wrapper = static_cast<int8_t>(Wrapper::OBJECT);
+		size += sizeof count;
+	}
+
+	void Object::addEntity(Root* r) {
+		this->entities.push_back(r);
+		count++;
+		size += r->getSize();
+	}
+
+	Root* Object::findByName(std::string name) {
+		for (auto r : entities) if (r->getName() == name) return r; //Root*
+		std::cout << "no as such" << std::endl;
+		return new Object("ninja"); //ninja means: object is not found (but here's a ninja).
+	}
+
+	void Object::pack(std::vector<int8_t>* buffer, int16_t* iterator) {
+		Core::encode<std::string>(buffer, iterator, name);
+		Core::encode<int16_t>(buffer, iterator, nameLength);
+		Core::encode<int8_t>(buffer, iterator, wrapper);
+		Core::encode<int16_t>(buffer, iterator, count);
+
+		for (Root* r : entities) r->pack(buffer, iterator);
 		Core::encode<int32_t>(buffer, iterator, size);
 	}
 }
@@ -280,13 +367,35 @@ using namespace Core;
 using namespace Util;
 
 int main(int argc, char** argv) {
-
 	assert(Core::Util::isLittleEndian());
+
+#if 0
 	int32_t foo = 5;
 	Primitive* p = Primitive::create("int32", ObjectModel::Type::I32, foo);
 	Core::Util::retriveNsave(p);
 	std::cout << "name: " << p->getName() << "\nsize: " << p->getSize() << std::endl;
-#if 0
+
+	std::vector<int64_t> data { 1, 2, 3 ,4 };
+	Array* arr = Array::createArray("array", Type::I64, data);
+	retriveNsave(arr);
+	
+	std::string some = "some str";
+	Array* str = Array::createString("string", Type::I8, some);
+	retriveNsave(str);
+
+	Object Test("tEST");
+	Test.addEntity(p);
+	Test.addEntity(arr);
+	Test.addEntity(str);
+
+	Object Test2("2tEST");
+	Test2.addEntity(p);
+	retriveNsave(&Test2);
+
+	Test.addEntity(&Test2);
+	retriveNsave(&Test);
+#endif
+
 	System Foo("Foo");
 	Event* e = new KeyboardEvent('a', true, false);
 
@@ -294,8 +403,9 @@ int main(int argc, char** argv) {
 	KeyboardEvent* kb = static_cast<KeyboardEvent*>(Foo.getEvent()); //better use this line, than less safe: (Keyboard*)Foo.getEvent();
 	
 	Foo.serialize();
-#endif
+
 	(void)argc;
 	(void)argv;
+
 	return 0;
 }
