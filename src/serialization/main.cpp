@@ -4,6 +4,12 @@
 #include <assert.h>
 #include <fstream>
 
+namespace Core
+{
+	template<typename T>
+	void encode(std::vector<int8_t>* buffer, int16_t* iterator, T value);
+}
+
 namespace ObjectModel {
 	enum class Wrapper : int8_t {
 		PRIMITIVE = 1,
