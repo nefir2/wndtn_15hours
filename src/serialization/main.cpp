@@ -1,18 +1,10 @@
 #include <iostream>
 #include <vector>
+#include <bitset>
+#include <assert.h>
+#include <fstream>
 
-namespace Core {
-	namespace Util {
-
-	}
-	template<typename T>
-	void encode(std::vector<int8_t>* buffer, int16_t* iterator, T value) {
-		for (unsigned i = 0, j = 0; i < sizeof T; i++) (*buffer)[(*iterator)++] = value >> (((sizeof T * 8) - 8) - (i == 0 ? j : j += 8));
-	}
-}
-
-namespace ObjectModel
-{
+namespace ObjectModel {
 	enum class Wrapper : int8_t {
 		PRIMITIVE = 1,
 		ARRAY,
@@ -70,11 +62,39 @@ namespace ObjectModel
 	class Object : public Root {
 
 	};
+} 
 
 
+namespace Core {
+	namespace Util {
+		bool isLittleEndian() {
+			// 0x00 0x00 0x00 0b0000 0101
+			int8_t a= 5;
+			std::string result = std::bitset<8>(a).to_string();
+			if (result.back() == '1') return true;
+		}
+
+		void save(const char* file, std::vector<int8_t> buffer) { 
+			std::ofstream out;
+			out.open(file);
+
+			for (unsigned i = 0; i < buffer.size(); i++) out << buffer[i];
+
+			out.close();
+		}
+
+		void retriveNsave(ObjectModel::Root* r) {
+			
+		}
+	}
+	template<typename T>
+	void encode(std::vector<int8_t>* buffer, int16_t* iterator, T value) {
+		for (unsigned i = 0, j = 0; i < sizeof(T); i++) (*buffer)[(*iterator)++] = value >> (((sizeof(T) * 8) - 8) - (i == 0 ? j : j += 8));
+	}
+}
+
+namespace ObjectModel {
 	// definition
-
-
 	Root::Root() : name("unknown"), wrapper(0), nameLength(0), size(sizeof nameLength + sizeof wrapper + sizeof size) {}
 
 	int32_t Root::getSize() {
@@ -113,7 +133,7 @@ namespace ObjectModel
 	void Primitive::pack(std::vector<int8_t>*, int16_t*) {
 
 	}
-} 
+}
 
 
 namespace EventSystem {
@@ -217,8 +237,11 @@ using namespace EventSystem;
 using namespace ObjectModel;
 
 int main(int argc, char** argv) {
+
+	assert(Core::Util::isLittleEndian());
 	int32_t foo = 5;
-	Primitive* p = Primitive::createI32("int32", Type::I32, foo);
+	Primitive* p = Primitive::createI32("int32", ObjectModel::Type::I32, foo);
+	std::cout << "name: " << p->getName() << "\nsize: " << p->getSize() << std::endl;
 #if 0
 	System Foo("Foo");
 	Event* e = new KeyboardEvent('a', true, false);
