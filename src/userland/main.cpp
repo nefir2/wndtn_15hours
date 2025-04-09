@@ -12,8 +12,7 @@
 
 using namespace EventSystem;
 using namespace ObjectModel;
-using namespace Core;
-using namespace Util;
+using namespace Core::Util;
 
 int main(int argc, char** argv) {
 	assert(Core::Util::isLittleEndian());
