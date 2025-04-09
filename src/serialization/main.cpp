@@ -51,7 +51,18 @@ namespace ObjectModel {
 	private:
 		Primitive();
 	public:
-		static Primitive* createI32(std::string name, Type type, int32_t value);
+		template<typename T>
+		static Primitive* create(std::string name, Type type, T value) {
+			Primitive* p = new Primitive();
+			p->setName(name);
+			p->wrapper = static_cast<int8_t>(Wrapper::PRIMITIVE);
+			p->type = static_cast<int8_t>(type);
+			p->data = new std::vector<int8_t>(sizeof value);
+			p->size += p->data->size();
+			int16_t iterator = 0;
+			Core::template encode(p->data, &iterator, value);
+			return p;
+		}
 		void pack(std::vector<int8_t>*, int16_t*);
 	};
 
@@ -84,12 +95,42 @@ namespace Core {
 		}
 
 		void retriveNsave(ObjectModel::Root* r) {
-			
+			int16_t iterator = 0;
+			std::vector<int8_t> buffer(r->getSize());
+			std::string name = r->getName().substr(0, r->getName().length()).append(".ttc");
+			r->pack(&buffer, &iterator);
+			save(name.c_str(), buffer);
 		}
 	}
+
+	// encode integral types
 	template<typename T>
 	void encode(std::vector<int8_t>* buffer, int16_t* iterator, T value) {
 		for (unsigned i = 0, j = 0; i < sizeof(T); i++) (*buffer)[(*iterator)++] = value >> (((sizeof(T) * 8) - 8) - (i == 0 ? j : j += 8));
+	}
+
+	template<>
+	void encode<float>(std::vector<int8_t>* buffer, int16_t* iterator, float value) {
+		int32_t result = *reinterpret_cast<int32_t*>(&value);
+		encode<int32_t>(buffer, iterator, result);
+	}
+
+	template<>
+	void encode<double>(std::vector<int8_t>* buffer, int16_t* iterator, double value) {
+		int64_t result = *reinterpret_cast<int64_t*>(&value);
+		encode<int64_t>(buffer, iterator, result);
+	}
+
+	//encode strings
+	template<>
+	void encode<std::string>(std::vector<int8_t>* buffer, int16_t* iterator, std::string value) {
+		for (unsigned i = 0; i < value.size(); i++) encode<int8_t>(buffer, iterator, value[i]);
+	}
+
+	//encode arrays
+	template<typename T>
+	void encode(std::vector<int8_t>* buffer, int16_t* iterator, std::vector<T> value) { 
+		for (unsigned i = 0; i < value.size(); i++) encode<T>(buffer, iterator, value[i]);
 	}
 }
 
@@ -119,19 +160,13 @@ namespace ObjectModel {
 		size += sizeof type;
 	}
 
-	Primitive* Primitive::createI32(std::string name, Type type, int32_t value) {
-		Primitive* p = new Primitive();
-		p->setName(name);
-		p->wrapper = static_cast<int8_t>(Wrapper::PRIMITIVE);
-		p->type = static_cast<int8_t>(type);
-		p->data = new std::vector<int8_t>(sizeof value);
-		int16_t iterator = 0;
-		Core::encode(p->data, &iterator, value);
-		return p;
-	}
-
-	void Primitive::pack(std::vector<int8_t>*, int16_t*) {
-
+	void Primitive::pack(std::vector<int8_t>* buffer, int16_t* iterator) {
+		Core::encode<std::string>(buffer, iterator, name);
+		Core::encode<int16_t>(buffer, iterator, nameLength);
+		Core::encode<int8_t>(buffer, iterator, wrapper);
+		Core::encode<int8_t>(buffer, iterator, type);
+		Core::encode<int8_t>(buffer, iterator, *data);
+		Core::encode<int32_t>(buffer, iterator, size);
 	}
 }
 
@@ -235,12 +270,15 @@ namespace EventSystem {
 
 using namespace EventSystem;
 using namespace ObjectModel;
+using namespace Core;
+using namespace Util;
 
 int main(int argc, char** argv) {
 
 	assert(Core::Util::isLittleEndian());
 	int32_t foo = 5;
-	Primitive* p = Primitive::createI32("int32", ObjectModel::Type::I32, foo);
+	Primitive* p = Primitive::create("int32", ObjectModel::Type::I32, foo);
+	Core::Util::retriveNsave(p);
 	std::cout << "name: " << p->getName() << "\nsize: " << p->getSize() << std::endl;
 #if 0
 	System Foo("Foo");

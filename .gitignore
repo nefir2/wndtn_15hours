@@ -13,3 +13,7 @@
 **/*.s
 **/*.o
 **/*.exe
+
+#ignore build files
+**/build
+**/build/*
