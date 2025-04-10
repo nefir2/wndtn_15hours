@@ -40,7 +40,7 @@ namespace Net
 
 	void Server::receive() {
 		if ((recvlength = recvfrom(serversocket, buffer, SIZE, 0, (struct sockaddr*)&info, &infolength)) == SOCKET_ERROR) {
-			printf("recv() failed... error code: \n", WSAGetLastError());
+			printf("recv() failed... error code: %d\n", WSAGetLastError());
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -49,15 +49,14 @@ namespace Net
 		printf("packet from: %s:%d\npacket buffer: '", inet_ntoa(info.sin_addr), ntohs(info.sin_port));
 		if (buffer[0] == 0x1) {
 			std::vector<int8_t> result;
-			for (unsigned i = 0; i < recvlength; i++) result.push_back(buffer[i]);
-
+			for (unsigned i = 0; i < (unsigned)recvlength; i++) result.push_back(buffer[i]);
 			Primitive p = Primitive::unpack(result);
 			primitives.insert(std::make_pair(p.getName(), p));
 			current = p.getName();
-
+			
 			printf("Primitive:\n");
-			printf("\t |Name:%s\n", p.getName().c_str());
-			printf("\t |Size:%d\n", p.getSize());
+			printf("\t |Name:'%s'\n", p.getName().c_str());
+			printf("\t |Size:'%d'\n", p.getSize());
 			printf("\t |Data:");
 			for (auto d : p.getData()) printf("[%d]", d);
 			printf("\n");
@@ -65,13 +64,13 @@ namespace Net
 		else {
 			//printf("data: ");
 			for (unsigned i = 0; i < recvlength; i++) printf("%c", buffer[i]);
-			printf("'\n");
+			printf("\n");
 		}
 	}
 
 	void Server::send() { 
 		if ((sendto(serversocket, buffer, recvlength, 0, (struct sockaddr*)&info, infolength)) == SOCKET_ERROR) {
-			printf("send() failed... error code: \n", WSAGetLastError());
+			printf("send() failed... error code: %d\n", WSAGetLastError());
 			exit(EXIT_FAILURE);
 		}
 	}

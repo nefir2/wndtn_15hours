@@ -15,7 +15,7 @@ namespace Core {
 	// encode integral types
 	template<typename T>
 	void encode(std::vector<int8_t>* buffer, int16_t* iterator, T value) {
-		for (unsigned i = 0, j = 0; i < sizeof(T); i++) (*buffer)[(*iterator)++] = value >> (((sizeof(T) * 8) - 8) - (i == 0 ? j : j += 8));
+		for (unsigned i = 0, j = 0; i < sizeof(T); i++) (*buffer)[(*iterator)++] = (value >> (((sizeof(T) * 8) - 8) - ((i == 0) ? j : j += 8)));
 	}
 
 	template<>

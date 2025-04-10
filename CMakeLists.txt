@@ -18,7 +18,7 @@ target_include_directories(serialization PRIVATE sources/serialization) # define
 target_compile_definitions(serialization PRIVATE BUILDDLL) # define argument for building program (build as dll)
 # target_compile_definitions(serialization PRIVATE OGFN) # define additional argument for building program (output generated files' names to stdout)
 
-add_executable(event_system ${event_system_SOURCES}) # add exeto make | definition of headers are unnecessary ${event_system_HEADERS}
+add_executable(event_system ${event_system_SOURCES}) # add exe to make | definition of headers are unnecessary ${event_system_HEADERS}
 target_include_directories(event_system PRIVATE sources/userland) # define directories, or smth idk
 target_include_directories(event_system PRIVATE sources/serialization)
 target_link_libraries(event_system PRIVATE serialization) # add generated library to executable.

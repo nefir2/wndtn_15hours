@@ -59,9 +59,11 @@ int main(int argc, char** argv) {
 	retriveNsave(p);
 
 	std::vector<int8_t> result = Core::Util::load("int16.abc");
-	printf("loaded from file value: '");
-	for (unsigned i = 0; i < result.size(); i++) std::cout << result[i];
-	printf("'\n");
+	printf("loaded from file value:\n");
+	for (unsigned i = 0; i < result.size(); i++) printf("%02X ", result[i]);
+	printf("\n");
+	for (unsigned i = 0; i < result.size(); i++) printf("%с ", result[i]);
+	printf("\n");
 
 	(void)argc;
 	(void)argv;

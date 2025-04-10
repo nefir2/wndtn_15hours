@@ -7,7 +7,7 @@
 #include <winsock2.h>
 #include "serialization.h"
 
-// #pragma comment(lib, "Ws2_32.lib") //ненужно, если не в Visual studio
+#pragma comment(lib, "Ws2_32.lib") //ненужно, если не в большой visual studio
 
 #define SIZE 1024
 
