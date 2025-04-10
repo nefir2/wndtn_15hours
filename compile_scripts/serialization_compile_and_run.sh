@@ -1,8 +1,8 @@
 #!/bin/bash
 
 function containsSrc() {
-	for e in `ls`; do
-		if [[ 'src' ]]; then
+	for e in $(ls); do
+		if [[ "$e" == 'src' ]]; then
 			return 0;
 		fi
 	done;
@@ -20,6 +20,11 @@ if [ $? -ne 0 ]; then
 fi
 
 cd bin;
+if [ $? -ne 0 ]; then
+	echo "я не могу найти bin !! я потерялся !!";
+	exit 1;
+fi;
+
 cmake ../CMakeLists.txt;
 echo -e "\nmaking and run . . . \n";
 make;
