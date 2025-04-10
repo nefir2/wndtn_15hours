@@ -21,8 +21,15 @@ fi
 
 cd bin;
 cmake ../CMakeLists.txt;
+echo -e "\nmaking and run . . . \n";
 make;
+echo -e '\nmaking done. running the program . . . ';
 command ./event_system.exe;
+if [ $? -eq 0 ]; then
+	echo -e '\nprogram exitted successfully.';
+else
+	echo -e "\nprogram\'s launch failed. exit code: \'$?\'.";
+fi;
 
 # g++.exe -std=c++11 src/serialization/main.cpp -o bin/serialization;
 # command bin/serialization.exe;
