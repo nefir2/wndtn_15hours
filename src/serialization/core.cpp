@@ -1,4 +1,5 @@
 #include "core.h"
+#include <string.h>
 
 namespace Core {
 	namespace Util {
@@ -24,6 +25,9 @@ namespace Core {
 			std::string name = r->getName().substr(0, r->getName().length()).append(".abc");
 			r->pack(&buffer, &iterator);
 			save(name.c_str(), buffer);
+		
+			//output name to stdout.
+			fprintf(stdout, name.append(" ").c_str());
 		}
 	} // namespace Util
 	

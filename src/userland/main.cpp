@@ -17,11 +17,11 @@ using namespace Core::Util;
 int main(int argc, char** argv) {
 	assert(Core::Util::isLittleEndian());
 
-#if 0
+#if 1
 	int32_t foo = 5;
 	Primitive* p = Primitive::create("int32", ObjectModel::Type::I32, foo);
 	Core::Util::retriveNsave(p);
-	std::cout << "name: " << p->getName() << "\nsize: " << p->getSize() << std::endl;
+	//std::cout << "name: " << p->getName() << "\nsize: " << p->getSize() << std::endl;
 
 	std::vector<int64_t> data { 1, 2, 3 ,4 };
 	Array* arr = Array::createArray("array", Type::I64, data);

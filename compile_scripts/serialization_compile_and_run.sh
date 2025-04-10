@@ -29,9 +29,16 @@ cmake ../CMakeLists.txt;
 echo -e "\nmaking and run . . . \n";
 make;
 echo -e '\nmaking done. running the program . . . ';
-command ./event_system.exe;
+export abcs=`./event_system.exe`;
+echo "stdout: $abcs";
 if [ $? -eq 0 ]; then
 	echo -e '\nprogram exitted successfully.';
+
+	echo 'showing outputed files.';
+	for abc in $abcs; do
+		echo -ne "\n\n\"$abc\":\n";
+		xxd $abc;
+	done;
 else
 	echo -e "\nprogram\'s launch failed. exit code: \'$?\'.";
 fi;
