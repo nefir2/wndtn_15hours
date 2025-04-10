@@ -46,7 +46,7 @@ namespace Net
 	}
 
 	void Server::process() {
-		printf("packet from: %s:%d\npacket buffer: '", inet_ntoa(info.sin_addr), ntohs(info.sin_port));
+		printf("packet from: %s:%d\n", inet_ntoa(info.sin_addr), ntohs(info.sin_port));
 		if (buffer[0] == 0x1) {
 			std::vector<int8_t> result;
 			for (unsigned i = 0; i < (unsigned)recvlength; i++) result.push_back(buffer[i]);
@@ -59,21 +59,44 @@ namespace Net
 			printf("\t |Size:'%d'\n", p.getSize());
 			printf("\t |Data:");
 			for (auto d : p.getData()) printf("[%d]", d);
-			printf("\n");
 		}
 		else {
-			//printf("data: ");
+			printf("data: ");
 			for (unsigned i = 0; i < recvlength; i++) printf("%c", buffer[i]);
-			printf("\n");
 		}
+		printf("\n");
 	}
 
 	void Server::send() { 
-		if ((sendto(serversocket, buffer, recvlength, 0, (struct sockaddr*)&info, infolength)) == SOCKET_ERROR) {
-			printf("send() failed... error code: %d\n", WSAGetLastError());
-			exit(EXIT_FAILURE);
+		if (primitives.empty()) {
+			if ((sendto(serversocket, buffer, recvlength, 0, (struct sockaddr*)&info, infolength)) == SOCKET_ERROR) {
+				printf("send() failed... error code: %d\n", WSAGetLastError());
+				exit(EXIT_FAILURE);
+			}
+		}
+		else {
+			int16_t it = 0;
+			std::unique_ptr<Primitive> p = modify(current);
+			std::vector<int8_t> result(p->getSize());
+			p->pack(&result, &it);
+			std::copy(result.begin(), result.end(), buffer);
+
+			if ((sendto(serversocket, buffer, p->getSize(), 0, (struct sockaddr*)&info, infolength)) == SOCKET_ERROR) {
+				printf("send() failed... error code: %d\n", WSAGetLastError());
+				exit(EXIT_FAILURE);
+			}
+			primitives.erase(current);
 		}
 	}
+
+	std::unique_ptr<Primitive> Server::modify(std::string key) {
+		primitives.erase(key); //right ver: primitives.find(key)
+		int16_t overtwentysix = 726;
+		std::unique_ptr<Primitive> p(Primitive::create("int16", Type::I16, overtwentysix));
+		primitives.insert(std::make_pair(p->getName(), *p));
+
+		return p;
+	}	
 
 	Server::~Server() {
 		WSACleanup();

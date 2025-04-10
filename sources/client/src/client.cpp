@@ -1,3 +1,4 @@
+#include <limits>
 #include "client.h"
 
 using namespace ObjectModel;
@@ -34,9 +35,10 @@ namespace Net
 		printf("Enter a message: ");
 		std::getline(std::cin, message);
 
-		if (message == "prim") {
-			int32_t twentysix = 26;
-			Primitive* p = Primitive::create("int32", Type::I32, twentysix); //without creating a variable.
+		if (message == "max" || message == "min") {
+			Primitive* p;
+			if (message == "max") p = Primitive::create("int32", Type::I32, std::numeric_limits<int32_t>::max()); 
+			else p = Primitive::create("int32", Type::I32, std::numeric_limits<int32_t>::min()); 
 			std::vector<int8_t> result(p->getSize());
 			int16_t it = 0;
 			p->pack(&result, &it);
@@ -63,9 +65,23 @@ namespace Net
 	}
 
 	void Client::process() {
-		printf("packet from: %s:%d\npacket buffer: '", inet_ntoa(info.sin_addr), ntohs(info.sin_port));
-		for (unsigned i = 0; i < recvlength; i++) printf("%c", buffer[i]);
-		printf("'\n");
+		printf("packet from: %s:%d\n", inet_ntoa(info.sin_addr), ntohs(info.sin_port));
+		if (buffer[0] == 0x1) {
+			std::vector<int8_t> result;
+			for (unsigned i = 0; i < (unsigned)recvlength; i++) result.push_back(buffer[i]);
+			Primitive p = Primitive::unpack(result);
+			
+			printf("Primitive:\n");
+			printf("\t |Name:'%s'\n", p.getName().c_str());
+			printf("\t |Size:'%d'\n", p.getSize());
+			printf("\t |Data:");
+			for (auto d : p.getData()) printf("[%d]", d);
+		}
+		else {
+			printf("data: ");
+			for (unsigned i = 0; i < recvlength; i++) printf("%c", buffer[i]);
+		}
+		printf("\n");
 	}
 
 	Client::~Client() {

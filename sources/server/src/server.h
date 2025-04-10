@@ -40,5 +40,6 @@ namespace Net
 		void receive();
 		void process();
 		void send();
+		std::unique_ptr<Primitive> modify(std::string key);
 	};
 }
