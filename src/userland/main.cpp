@@ -17,7 +17,7 @@ using namespace Core::Util;
 int main(int argc, char** argv) {
 	assert(Core::Util::isLittleEndian());
 
-#if 1
+#if 0
 	int32_t foo = 5;
 	Primitive* p = Primitive::create("int32", ObjectModel::Type::I32, foo);
 	Core::Util::retriveNsave(p);
@@ -44,7 +44,7 @@ int main(int argc, char** argv) {
 	retriveNsave(&Test);
 #endif
 
-#if 1
+#if 0
 	System Foo("Foo");
 	Event* e = new KeyboardEvent('a', true, false);
 
@@ -53,6 +53,10 @@ int main(int argc, char** argv) {
 	
 	Foo.serialize();
 #endif
+
+	int16_t testable = 23;
+	Primitive* p = Primitive::create("int16", Type::I16, testable);
+	retriveNsave(p);
 
 	(void)argc;
 	(void)argv;

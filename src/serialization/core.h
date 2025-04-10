@@ -8,6 +8,7 @@ namespace Core {
 	namespace Util {
 		bool LIB isLittleEndian();
 		void save(const char*, std::vector<int8_t> vector);
+		std::vector<int8_t> load(const char*);
 		void LIB retriveNsave(ObjectModel::Root* r);
 	}
 
@@ -46,7 +47,7 @@ namespace Core {
 	//decode integral types 
 	template<typename T>
 	T decode(const std::vector<int8_t>& buffer, int16_t& it) {
-		T result;
+		T result = 0;
 		for (unsigned i = 0; i < sizeof(T); i++) {
 			T temp = (T)buffer[it++] << (((sizeof(T) * 8) - 8) - (i * 8));
 			result = result | temp;
@@ -64,5 +65,13 @@ namespace Core {
 		it += size;
 
 		return result;
+	}
+
+	//decode arrays
+	template<typename ...>
+	void decode(const std::vector<int8_t>& buffer, int16_t& it, std::vector<int8_t>& dest) {
+		for (unsigned i = 0; i < dest.size(); i++) {
+			dest[i] = buffer[it++];
+		}
 	}
 }

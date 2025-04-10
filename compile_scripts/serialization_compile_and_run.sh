@@ -30,20 +30,19 @@ echo -e "\nmaking and run . . . \n";
 make;
 echo -e '\nmaking done. running the program . . . ';
 export abcs=`./event_system.exe`;
-echo "stdout: $abcs";
+echo "stdout: \"$abcs\"";
 if [ $? -eq 0 ]; then
 	echo -e '\nprogram exitted successfully.';
 
-	echo 'showing outputed files.';
-	for abc in $abcs; do
-		echo -ne "\n\n\"$abc\":\n";
-		xxd $abc;
-	done;
+	if [ -n "$abcs" ]; then
+		echo 'showing outputed files.';
+		for abc in $abcs; do
+			echo -ne "\n\n\"$abc\":\n";
+			xxd $abc;
+		done;
+	fi;
 else
 	echo -e "\nprogram\'s launch failed. exit code: \'$?\'.";
 fi;
-
-# g++.exe -std=c++11 src/serialization/main.cpp -o bin/serialization;
-# command bin/serialization.exe;
 
 exit 0;
