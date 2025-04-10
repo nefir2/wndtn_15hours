@@ -7,7 +7,7 @@
 // #include <string>
 
 #include "eventsystem.h"
-#include <../serialization/serialization.h>
+#include <serialization.h>
 #include <cassert>
 
 using namespace EventSystem;

@@ -8,6 +8,7 @@ namespace Core {
 			int8_t a = 5;
 			std::string result = std::bitset<8>(a).to_string();
 			if (result.back() == '1') return true;
+			return false;
 		}
 
 		void save(const char* file, std::vector<int8_t> buffer) { 

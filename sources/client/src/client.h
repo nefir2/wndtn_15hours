@@ -4,6 +4,7 @@
 #include <thread>
 #include <unordered_map>
 #include <vector>
+#include <string>
 #include <winsock2.h>
 
 // #pragma comment(lib, "Ws2_32.lib") //ненужно, если не в Visual studio
@@ -12,10 +13,10 @@
 
 namespace Net
 {
-	class Server {
+	class Client {
 	private:
 		WSADATA wsa;
-		SOCKET serversocket;
+		SOCKET clientsocket;
 		std::string ipaddress;
 		int port;
 		char buffer[SIZE];
@@ -24,11 +25,10 @@ namespace Net
 		int infolength;
 		int recvlength;
 	public:
-		Server(int, std::string);
-		~Server();
+		Client(int, std::string);
+		~Client();
 	public:
-		void start();
-//		void stop();
+		void connect();
 	private:
 		void init();
 		void receive();
