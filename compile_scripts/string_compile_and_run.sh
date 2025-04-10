@@ -1,5 +1,6 @@
 #!/bin/bash
 
+export projname='string';
 export filename='wndtn_string';
 export srcdir='src';
 export bindir='bin';
@@ -12,7 +13,7 @@ if [[ $? -ne 0 ]]; then
 	exit 1;
 fi
 cd ../
-g++ "${srcdir}/${filename}${fileext}" -o "${bindir}/${filename}";
+g++ "${srcdir}/${projname}/${filename}${fileext}" -o "${bindir}/${filename}";
 command "${bindir}/${filename}";
 
 exit 0;

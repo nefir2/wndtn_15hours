@@ -7,8 +7,8 @@
 namespace Core {
 	namespace Util {
 		bool LIB isLittleEndian();
-		void save(const char*, std::vector<int8_t> vector);
-		std::vector<int8_t> load(const char*);
+		void LIB save(const char*, std::vector<int8_t> vector);
+		std::vector<int8_t> LIB load(const char*);
 		void LIB retriveNsave(ObjectModel::Root* r);
 	}
 

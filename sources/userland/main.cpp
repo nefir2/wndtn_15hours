@@ -58,6 +58,11 @@ int main(int argc, char** argv) {
 	Primitive* p = Primitive::create("int16", Type::I16, testable);
 	retriveNsave(p);
 
+	std::vector<int8_t> result = Core::Util::load("int16.abc");
+	printf("loaded from file value: '");
+	for (unsigned i = 0; i < result.size(); i++) std::cout << result[i];
+	printf("'\n");
+
 	(void)argc;
 	(void)argv;
 

@@ -2,7 +2,7 @@
 
 function containsSrc() {
 	for e in $(ls); do
-		if [[ "$e" == 'src' ]]; then
+		if [[ "$e" == 'sources' ]]; then
 			return 0;
 		fi
 	done;
@@ -25,10 +25,15 @@ if [ $? -ne 0 ]; then
 	exit 1;
 fi;
 
-cmake ../CMakeLists.txt;
+cmake ../sources/CMakeLists.txt;
 echo -e "\nmaking and run . . . \n";
 make;
-echo -e '\nmaking done. running the program . . . ';
+if [ $? -eq 0 ]; then
+	echo -e '\nmaking done. running the program . . . ';
+else
+	echo -e "\nmaking file failed. exit code: '$?'.";
+	exit $?;
+fi;
 export abcs=`./event_system.exe`;
 echo "stdout: \"$abcs\"";
 if [ $? -eq 0 ]; then
@@ -42,7 +47,7 @@ if [ $? -eq 0 ]; then
 		done;
 	fi;
 else
-	echo -e "\nprogram\'s launch failed. exit code: \'$?\'.";
+	echo -e "\nprogram\'s launch failed. exit code: '$?'.";
 fi;
 
 exit 0;

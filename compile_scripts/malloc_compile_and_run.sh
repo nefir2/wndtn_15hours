@@ -1,5 +1,6 @@
 #!/bin/bash
 
+export projname='malloc';
 export filename='wndtn_malloc';
 export srcdir='src';
 export bindir='bin';
@@ -12,7 +13,7 @@ if [[ $? -ne 0 ]]; then
 	exit 1;
 fi
 cd ../
-gcc "${srcdir}/${filename}${fileext}" -o "${bindir}/${filename}_${compilername}"; 
+gcc "${srcdir}/${projname}/${filename}${fileext}" -o "${bindir}/${filename}_${compilername}"; 
 command "${bindir}/${filename}_${compilername}";
 
 exit 0;
