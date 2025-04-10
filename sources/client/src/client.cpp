@@ -1,4 +1,7 @@
 #include "client.h"
+#include "serialization.h"
+
+using namespace ObjectModel;
 
 namespace Net
 {
@@ -32,16 +35,30 @@ namespace Net
 		printf("Enter a message: ");
 		std::getline(std::cin, message);
 
-
-		if ((sendto(clientsocket, message.c_str(), message.size(), 0, (struct sockaddr*)&info, infolength)) == SOCKET_ERROR) {
-			printf("send() failed... error code: \n", WSAGetLastError());
-			exit(EXIT_FAILURE);
+		if (message == "prim") {
+			int32_t twentysix = 26;
+			Primitive* p = Primitive::create("int32", Type::I32, twentysix); //without creating a variable.
+			std::vector<int8_t> result(p->getSize());
+			int16_t it = 0;
+			p->pack(&result, &it);
+			std::copy(result.begin(), result.end(), buffer);
+			
+			if ((sendto(clientsocket, buffer, p->getSize(), 0, (struct sockaddr*)&info, infolength)) == SOCKET_ERROR) {
+				printf("send() failed... error code: %d\n", WSAGetLastError());
+				exit(EXIT_FAILURE);
+			}
+		}
+		else {
+			if ((sendto(clientsocket, message.c_str(), message.size(), 0, (struct sockaddr*)&info, infolength)) == SOCKET_ERROR) {
+				printf("send() failed... error code: %d\n", WSAGetLastError());
+				exit(EXIT_FAILURE);
+			}
 		}
 	}
 
 	void Client::receive() {
 		if ((recvlength = recvfrom(clientsocket, buffer, SIZE, 0, (struct sockaddr*)&info, &infolength)) == SOCKET_ERROR) {
-			printf("recv() failed... error code: \n", WSAGetLastError());
+			printf("recv() failed... error code: %d\n", WSAGetLastError());
 			exit(EXIT_FAILURE);
 		}
 	}

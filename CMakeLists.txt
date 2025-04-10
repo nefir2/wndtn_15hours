@@ -31,7 +31,7 @@ file(GLOB_RECURSE client_SOURCES "sources/client/src/*.cpp") # define source fil
 file(GLOB_RECURSE server_SOURCES "sources/server/src/*.cpp") # define source files for exe
 
 add_executable(client ${client_SOURCES}) # add library to make | definition of headers are unnecessary  ${serialization_HEADERS}
-target_include_directories(client PRIVATE sources/client/src) # define directories, or smth idk
+target_include_directories(client PRIVATE sources/client/src sources/serialization) # define directories, or smth idk
 target_link_libraries(client PRIVATE serialization ws2_32) # add libraries to executable.
 
 add_executable(server ${server_SOURCES}) # add exeto make | definition of headers are unnecessary ${event_system_HEADERS}

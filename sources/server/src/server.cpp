@@ -1,5 +1,7 @@
 #include "server.h"
 
+using namespace ObjectModel;
+
 namespace Net
 {
 	Server::Server(int port, std::string ipaddress) : wsa{ 0 }, port(port), ipaddress(ipaddress), serversocket(INVALID_SOCKET), info{ 0 }, infolength(sizeof(info)) {}
@@ -45,8 +47,26 @@ namespace Net
 
 	void Server::process() {
 		printf("packet from: %s:%d\npacket buffer: '", inet_ntoa(info.sin_addr), ntohs(info.sin_port));
-		for (unsigned i = 0; i < recvlength; i++) printf("%c", buffer[i]);
-		printf("'\n");
+		if (buffer[0] == 0x1) {
+			std::vector<int8_t> result;
+			for (unsigned i = 0; i < recvlength; i++) result.push_back(buffer[i]);
+
+			Primitive p = Primitive::unpack(result);
+			primitives.insert(std::make_pair(p.getName(), p));
+			current = p.getName();
+
+			printf("Primitive:\n");
+			printf("\t |Name:%s\n", p.getName().c_str());
+			printf("\t |Size:%d\n", p.getSize());
+			printf("\t |Data:");
+			for (auto d : p.getData()) printf("[%d]", d);
+			printf("\n");
+		}
+		else {
+			//printf("data: ");
+			for (unsigned i = 0; i < recvlength; i++) printf("%c", buffer[i]);
+			printf("'\n");
+		}
 	}
 
 	void Server::send() { 

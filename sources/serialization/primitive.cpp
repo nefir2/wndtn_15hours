@@ -28,4 +28,7 @@ namespace ObjectModel {
 		return p;
 	}
 	
+	std::vector<int8_t> Primitive::getData() {
+		return *data;
+	}
 } // namespace ObjectModel

@@ -5,10 +5,13 @@
 #include <unordered_map>
 #include <vector>
 #include <winsock2.h>
+#include "serialization.h"
 
 // #pragma comment(lib, "Ws2_32.lib") //ненужно, если не в Visual studio
 
 #define SIZE 1024
+
+using namespace ObjectModel;
 
 namespace Net
 {
@@ -23,6 +26,9 @@ namespace Net
 		struct sockaddr_in info;
 		int infolength;
 		int recvlength;
+
+		std::unordered_map<std::string, Primitive> primitives;
+		std::string current;
 	public:
 		Server(int, std::string);
 		~Server();

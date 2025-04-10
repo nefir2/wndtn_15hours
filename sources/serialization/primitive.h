@@ -25,5 +25,6 @@ namespace ObjectModel
 		}
 		void pack(std::vector<int8_t>*, int16_t*);
 		static Primitive unpack(const std::vector<int8_t>&);
+		std::vector<int8_t> getData();
 	};
 } // namespace ObjectModel
