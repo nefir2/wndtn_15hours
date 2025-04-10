@@ -18,7 +18,9 @@ namespace Net
 		printf("Success!\n");
 
 		printf("bind socket\n");
-		assert(!(bind(serversocket, (struct sockaddr*)&info, infolength)) && "couldn't bind socket");
+		int32_t bindval = bind(serversocket, (struct sockaddr*)&info, infolength);
+		printf("bind value: %d\n", bindval);
+		assert(!bindval && "couldn't bind socket");
 		printf("socket binded\n");
 
 		printf("server started at: %s:%d\n", inet_ntoa(info.sin_addr), ntohs(info.sin_port));
