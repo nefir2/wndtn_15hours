@@ -47,10 +47,9 @@ namespace Net
 	}
 
 	void Client::process() {
-		printf("packet from: %s:%d", inet_ntoa(info.sin_addr), ntohs(info.sin_port));
-		for (unsigned i = 0; i < recvlength; i++) {
-			printf("%c", buffer[i]);
-		}
+		printf("packet from: %s:%d\npacket buffer: '", inet_ntoa(info.sin_addr), ntohs(info.sin_port));
+		for (unsigned i = 0; i < recvlength; i++) printf("%c", buffer[i]);
+		printf("'\n");
 	}
 
 	Client::~Client() {
