@@ -12,8 +12,19 @@ function containsSrc() {
 containsSrc;
 if [ $? -ne 0 ]; then
 	cd ../
+	containsSrc;
+	if [ $? -ne 0 ]; then
+		echo "ты хочешь чтобы я тебе намусорил непонятно где?";
+		exit $?;
+	fi
 fi
-g++.exe -std=c++11 src/serialization/main.cpp -o bin/serialization;
-command bin/serialization.exe;
+
+cd bin;
+cmake ../CMakeLists.txt;
+make;
+command ./event_system.exe;
+
+# g++.exe -std=c++11 src/serialization/main.cpp -o bin/serialization;
+# command bin/serialization.exe;
 
 exit 0;

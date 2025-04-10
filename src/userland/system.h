@@ -1,11 +1,12 @@
 #pragma once
 #include <string>
 #include <vector>
-#include <serialization.h>
-#include "event.h" //вместо того чтобы посреди класса объявлять о существовании Event - лучше просто указать его в хедерах.
+#include <../serialization/serialization.h>
 
 namespace EventSystem
 {
+	class Event;
+
 	class System {
 	private:
 		friend class Event;
