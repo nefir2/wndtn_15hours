@@ -20,3 +20,11 @@
 
 #ignore library build files.
 **/*.gch
+
+#ignore some java files.
+**/.class
+**/.jar
+
+#ignore some cs files.
+**/obj
+**/obj/*
