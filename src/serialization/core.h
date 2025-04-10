@@ -40,4 +40,29 @@ namespace Core {
 	void encode(std::vector<int8_t>* buffer, int16_t* iterator, std::vector<T> value) { 
 		for (unsigned i = 0; i < value.size(); i++) encode<T>(buffer, iterator, value[i]);
 	}
+
+	//deserialize
+
+	//decode integral types 
+	template<typename T>
+	T decode(const std::vector<int8_t>& buffer, int16_t& it) {
+		T result;
+		for (unsigned i = 0; i < sizeof(T); i++) {
+			T temp = (T)buffer[it++] << (((sizeof(T) * 8) - 8) - (i * 8));
+			result = result | temp;
+		}
+		return result;
+	}
+
+	//decode string
+	template<>
+	inline std::string decode<std::string>(const std::vector<int8_t>& buffer, int16_t& it) {
+		it -= 2;
+		int16_t size = decode<int16_t>(buffer, it);
+
+		std::string result(buffer.begin() + it, buffer.begin() + (it + size));
+		it += size;
+
+		return result;
+	}
 }
