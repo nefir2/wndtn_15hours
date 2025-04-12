@@ -22,7 +22,7 @@ add_executable(event_system ${event_system_SOURCES}) # add exe to make | definit
 target_include_directories(event_system PRIVATE "${CMAKE_SOURCE_DIR}sources/userland") # define directories, or smth idk
 target_include_directories(event_system PRIVATE "${CMAKE_SOURCE_DIR}/sources/serialization")
 target_link_libraries(event_system PRIVATE serialization) # add generated library to executable.
-message(${CMAKE_SOURCE_DIR})
+
 #end of build serialization
 
 # build client-server
