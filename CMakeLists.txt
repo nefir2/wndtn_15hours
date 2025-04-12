@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13)
 
-project(serialization VERSION 1.0 LANGUAGES CXX) #project name and language definition
+project(wndtn_15hours VERSION 1.0 LANGUAGES CXX) #project name and language definition
 
 add_compile_options(-Wall) # define that will be shown all Warnings
 
@@ -34,7 +34,7 @@ add_executable(client ${client_SOURCES}) # add library to make | definition of h
 target_include_directories(client PRIVATE sources/client/src sources/serialization) # define directories, or smth idk
 target_link_libraries(client PRIVATE serialization ws2_32) # add libraries to executable.
 
-add_executable(server ${server_SOURCES}) # add exeto make | definition of headers are unnecessary ${event_system_HEADERS}
+add_executable(server ${server_SOURCES})
 target_include_directories(server PRIVATE sources/server/src sources/serialization) # define directories, or smth idk
 target_link_libraries(server PRIVATE serialization ws2_32) # add libraries to executable.
 
@@ -57,9 +57,9 @@ target_include_directories(EventSystem PRIVATE sources/EventSystem/deps/include 
 target_link_libraries(EventSystem PRIVATE glfw3dll OpenGL32 serialization)  # glfw3.lib, if not working
 
 add_custom_command(TARGET EventSystem POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy
-    "${GLFW_PATH}/glfw3.dll"  # Источник
-    "bin/glfw3.dll"  # Назначение
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${GLFW_PATH}/glfw3.dll"
+    "$<TARGET_FILE_DIR:EventSystem>/glfw3.dll"
 )
 
 #end of Building EventSystem
