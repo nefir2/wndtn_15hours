@@ -43,15 +43,15 @@ target_link_libraries(server PRIVATE serialization ws2_32) # add libraries to ex
 # build EventSystem
 
 file (GLOB_RECURSE EventSystem_SOURCES "${CMAKE_SOURCE_DIR}/sources/EventSystem/src/*.cpp")
-set(GLFW_PATH "${CMAKE_SOURCE_DIR}/sources/EventSystem/deps/lib")
-include_directories(
-    "${CMAKE_SOURCE_DIR}/sources/EventSystem/deps/include"
-    "${CMAKE_SOURCE_DIR}/sources/EventSystem/deps/include/GLFW"
-)
-link_directories(${GLFW_PATH})
+# set(GLFW_PATH "${CMAKE_SOURCE_DIR}/sources/EventSystem/deps/lib")
+# include_directories(
+#     "${CMAKE_SOURCE_DIR}/sources/EventSystem/deps/include"
+#     "${CMAKE_SOURCE_DIR}/sources/EventSystem/deps/include/GLFW"
+# )
+# link_directories(${GLFW_PATH})
 
 add_executable(EventSystem ${EventSystem_SOURCES})
-target_include_directories(EventSystem PRIVATE "${CMAKE_SOURCE_DIR}/sources/EventSystem/deps/include" "${CMAKE_SOURCE_DIR}/sources/EventSystem/deps/lib" "${CMAKE_SOURCE_DIR}/sources/serialization") # define directories, or smth idk
+# target_include_directories(EventSystem PRIVATE "${CMAKE_SOURCE_DIR}/sources/EventSystem/deps/include" "${CMAKE_SOURCE_DIR}/sources/EventSystem/deps/lib" "${CMAKE_SOURCE_DIR}/sources/serialization") # define directories, or smth idk
 target_link_libraries(EventSystem PRIVATE glfw3dll OpenGL32 serialization)  # glfw3.lib, if not working
 
 add_custom_command(TARGET EventSystem POST_BUILD
