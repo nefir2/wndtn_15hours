@@ -1,0 +1,3 @@
+[submodule "sources/EventSystem/glfw"]
+	path = sources/EventSystem/glfw
+	url = https://github.com/glfw/glfw
