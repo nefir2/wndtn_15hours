@@ -8,15 +8,15 @@ import java.awt.Canvas;
 import java.awt.Graphics;
 import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.image.BufferStrategy;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.JFrame;
 
-import src.app.events.Event;
 import src.app.layers.Layer;
+import src.app.events.Event;
 import src.app.events.types.MouseMotionEvent;
 import src.app.events.types.MousePressedEvent;
 import src.app.events.types.MouseReleasedEvent;

@@ -6,12 +6,12 @@ import src.app.events.Event;
 import src.app.events.EventListener;
 
 public class Layer implements EventListener {
-	@Override
+	//@Override
 	public void onEvent(Event e) {
 
 	}
 
 	public void onRender(Graphics g) {
-		
+
 	}
 }
