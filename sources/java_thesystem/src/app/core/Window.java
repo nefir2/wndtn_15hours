@@ -25,9 +25,11 @@ public class Window extends Canvas {
 	private BufferStrategy bs;
 	private Graphics g;
 	private JFrame frame;
+	private Color color;
 	private List<Layer> layers = new ArrayList<Layer>();
 
-	public Window(String name, int width, int height) {
+	public Window(String name, int width, int height, Color color) {
+		this.color = color;
 		setPreferredSize(new Dimension(width, height));
 		init(name);
 
@@ -75,7 +77,7 @@ public class Window extends Canvas {
 		bs = getBufferStrategy();
 
 		g = bs.getDrawGraphics();
-		g.setColor(Color.WHITE);
+		g.setColor(color);
 		g.fillRect(0, 0, getWidth(), getHeight());
 		onRender(g);
 		g.dispose();

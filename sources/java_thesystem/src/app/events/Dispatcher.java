@@ -8,6 +8,6 @@ public class Dispatcher {
 
 	public void dispatch(Event.Type type, EventHandler handler) {
 		if (event.handled) return;
-		if (event.getType().equals(type)) handler.handle(event);
+		if (event.getType().equals(type)) event.handled = handler.handle(event);
 	}
 }
