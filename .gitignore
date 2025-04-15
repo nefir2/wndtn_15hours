@@ -28,3 +28,9 @@
 #ignore some cs files.
 **/obj
 **/obj/*
+
+# ignore some things from py
+**/venv
+**/venv/*
+**/__pycache__
+**/__pycache__/*
