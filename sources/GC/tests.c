@@ -1,8 +1,9 @@
 #include <stdio.h>
+#include <locale.h>
 #include "gc.h"
 
 void first_test() {
-	printf("1: РѕР±СЉРµРєС‚С‹ РЅР° СЃС‚РµРєРµ СЃРѕС…СЂР°РЅРµРЅС‹.\n");
+	printf("1: объекты на стеке сохранены.\n");
 	vm* mainVm = newVm();
 	pushInt(mainVm, 1);
 	pushInt(mainVm, 2);
@@ -12,7 +13,7 @@ void first_test() {
 }
 
 void second_test() {
-	printf("2: РЅРµРґРѕСЃСЏРіР°РµРјС‹Рµ РѕР±СЉРµРєС‚С‹ СѓРґР°Р»РµРЅС‹.\n");
+	printf("2: недосягаемые объекты удалены.\n");
 	vm* mainVm = newVm();
 	pushInt(mainVm, 1);
 	pushInt(mainVm, 2);
@@ -24,7 +25,7 @@ void second_test() {
 }
 
 void third_test() {
-	printf("3: РґРѕС‚СЏРЅСѓС‚СЊСЃСЏ РґРѕ РІР»РѕР¶РµРЅРЅС‹С… РѕР±СЉРµРєС‚РѕРІ.\n");
+	printf("3: дотянуться до вложенных объектов.\n");
 	vm* mainVm = newVm();
 	pushInt(mainVm, 1);
 	pushInt(mainVm, 2);
