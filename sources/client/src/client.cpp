@@ -35,6 +35,11 @@ namespace Net
 		printf("Enter a message: ");
 		std::getline(std::cin, message);
 
+		if (message.size() == 0) {
+			printf("message's size is zero.\n");
+			return;
+		}
+
 		if (message == "max" || message == "min") {
 			Primitive* p;
 			if (message == "max") p = Primitive::create("int32", Type::I32, std::numeric_limits<int32_t>::max()); 
